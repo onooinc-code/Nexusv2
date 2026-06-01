@@ -1,0 +1,428 @@
+{
+  "info": {
+    "name": "WAHA (WhatsApp HTTP API) - Full Reference",
+    "version": "2026.4.3",
+    "description": "A categorized and cleaned JSON mapping of all endpoints required to build a WhatsApp Web App."
+  },
+  "modules": [
+    {
+      "category": "Sessions & Authentication",
+      "description": "Manage WhatsApp accounts, pairing, and lifecycle.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/api/sessions",
+          "summary": "List all sessions",
+          "queryParams": ["expand", "all"]
+        },
+        {
+          "method": "POST",
+          "path": "/api/sessions",
+          "summary": "Create a session",
+          "body": { "name": "string", "start": "boolean", "config": "object" }
+        },
+        {
+          "method": "GET",
+          "path": "/api/sessions/{session}",
+          "summary": "Get session information"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/sessions/{session}",
+          "summary": "Update a session configuration",
+          "body": { "config": "object" }
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/sessions/{session}",
+          "summary": "Delete the session completely"
+        },
+        {
+          "method": "POST",
+          "path": "/api/sessions/{session}/start",
+          "summary": "Start an existing session"
+        },
+        {
+          "method": "POST",
+          "path": "/api/sessions/{session}/stop",
+          "summary": "Stop an active session"
+        },
+        {
+          "method": "POST",
+          "path": "/api/sessions/{session}/logout",
+          "summary": "Logout from the WhatsApp session"
+        },
+        {
+          "method": "POST",
+          "path": "/api/sessions/{session}/restart",
+          "summary": "Restart the session"
+        },
+        {
+          "method": "GET",
+          "path": "/api/{session}/auth/qr",
+          "summary": "Get QR code for pairing WhatsApp",
+          "queryParams": ["format (image|raw)"]
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/auth/request-code",
+          "summary": "Request pairing code (for phone number auth)",
+          "body": { "phoneNumber": "string", "method": "string" }
+        }
+      ]
+    },
+    {
+      "category": "Chatting (Sending Messages)",
+      "description": "Endpoints to send various types of messages.",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/api/sendText",
+          "summary": "Send a text message",
+          "body": { "chatId": "string", "text": "string", "session": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/sendImage",
+          "summary": "Send an image",
+          "body": { "chatId": "string", "file": "object", "caption": "string", "session": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/sendFile",
+          "summary": "Send a document/file",
+          "body": { "chatId": "string", "file": "object", "caption": "string", "session": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/sendVoice",
+          "summary": "Send a voice message (audio)",
+          "body": { "chatId": "string", "file": "object", "session": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/sendVideo",
+          "summary": "Send a video",
+          "body": { "chatId": "string", "file": "object", "caption": "string", "session": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/sendLocation",
+          "summary": "Send a GPS location",
+          "body": { "chatId": "string", "latitude": "number", "longitude": "number", "title": "string", "session": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/sendContactVcard",
+          "summary": "Send a contact card (VCard)",
+          "body": { "chatId": "string", "contacts": "array", "session": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/sendSeen",
+          "summary": "Mark message(s) as seen/read",
+          "body": { "chatId": "string", "messageIds": "array", "session": "string" }
+        },
+        {
+          "method": "PUT",
+          "path": "/api/reaction",
+          "summary": "React to a message with an emoji",
+          "body": { "messageId": "string", "reaction": "string", "session": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/forwardMessage",
+          "summary": "Forward an existing message",
+          "body": { "chatId": "string", "messageId": "string", "session": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/sendPoll",
+          "summary": "Send a poll",
+          "body": { "chatId": "string", "poll": "object", "session": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/sendPollVote",
+          "summary": "Vote on a poll",
+          "body": { "chatId": "string", "pollMessageId": "string", "votes": "array", "session": "string" }
+        }
+      ]
+    },
+    {
+      "category": "Chats (Reading & Management)",
+      "description": "Manage chat history, edit messages, and archive chats.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/api/{session}/chats",
+          "summary": "Get all chats"
+        },
+        {
+          "method": "GET",
+          "path": "/api/{session}/chats/overview",
+          "summary": "Get an overview of chats (ideal for UI sidebars)"
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/{session}/chats/{chatId}",
+          "summary": "Delete an entire chat"
+        },
+        {
+          "method": "GET",
+          "path": "/api/{session}/chats/{chatId}/messages",
+          "summary": "Get messages in a specific chat",
+          "queryParams": ["limit", "offset", "downloadMedia"]
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/{session}/chats/{chatId}/messages",
+          "summary": "Clear all messages from a chat"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/{session}/chats/{chatId}/messages/{messageId}",
+          "summary": "Edit a previously sent message",
+          "body": { "text": "string" }
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/{session}/chats/{chatId}/messages/{messageId}",
+          "summary": "Delete/Revoke a specific message"
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/chats/{chatId}/messages/{messageId}/pin",
+          "summary": "Pin a message in a chat",
+          "body": { "duration": "number" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/chats/{chatId}/archive",
+          "summary": "Archive a chat"
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/chats/{chatId}/unread",
+          "summary": "Mark a chat as unread"
+        }
+      ]
+    },
+    {
+      "category": "Profile & Contacts",
+      "description": "Manage user profile and fetch contact details.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/api/{session}/profile",
+          "summary": "Get my profile details"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/{session}/profile/name",
+          "summary": "Set my profile name",
+          "body": { "name": "string" }
+        },
+        {
+          "method": "PUT",
+          "path": "/api/{session}/profile/status",
+          "summary": "Set my profile status (About text)",
+          "body": { "status": "string" }
+        },
+        {
+          "method": "PUT",
+          "path": "/api/{session}/profile/picture",
+          "summary": "Set profile picture",
+          "body": { "file": "object" }
+        },
+        {
+          "method": "GET",
+          "path": "/api/contacts/check-exists",
+          "summary": "Check if a phone number exists on WhatsApp",
+          "queryParams": ["phone", "session"]
+        },
+        {
+          "method": "GET",
+          "path": "/api/contacts/profile-picture",
+          "summary": "Get a contact's profile picture URL",
+          "queryParams": ["contactId", "session"]
+        },
+        {
+          "method": "POST",
+          "path": "/api/contacts/block",
+          "summary": "Block a contact",
+          "body": { "contactId": "string", "session": "string" }
+        }
+      ]
+    },
+    {
+      "category": "Groups",
+      "description": "Group creation, participant management, and admin settings.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/api/{session}/groups",
+          "summary": "Get a list of all groups"
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/groups",
+          "summary": "Create a new group",
+          "body": { "name": "string", "participants": "array" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/groups/join",
+          "summary": "Join a group using an invite code/URL",
+          "body": { "code": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/groups/{id}/leave",
+          "summary": "Leave a group"
+        },
+        {
+          "method": "PUT",
+          "path": "/api/{session}/groups/{id}/subject",
+          "summary": "Update the group's title",
+          "body": { "subject": "string" }
+        },
+        {
+          "method": "PUT",
+          "path": "/api/{session}/groups/{id}/description",
+          "summary": "Update the group's description",
+          "body": { "description": "string" }
+        },
+        {
+          "method": "GET",
+          "path": "/api/{session}/groups/{id}/invite-code",
+          "summary": "Get the group's invite link"
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/groups/{id}/participants/add",
+          "summary": "Add participants to the group",
+          "body": { "participants": "array" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/groups/{id}/participants/remove",
+          "summary": "Remove participants from the group",
+          "body": { "participants": "array" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/groups/{id}/admin/promote",
+          "summary": "Promote a user to group admin",
+          "body": { "participants": "array" }
+        }
+      ]
+    },
+    {
+      "category": "Status (Stories) & Presence",
+      "description": "View/Update online status, and post WhatsApp Stories.",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/api/{session}/presence",
+          "summary": "Set session presence (online, offline, typing...)",
+          "body": { "chatId": "string", "presence": "string" }
+        },
+        {
+          "method": "GET",
+          "path": "/api/{session}/presence/{chatId}",
+          "summary": "Get the presence status for a specific chat ID"
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/status/text",
+          "summary": "Post a Text Status/Story",
+          "body": { "text": "string", "backgroundColor": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/status/image",
+          "summary": "Post an Image Status/Story",
+          "body": { "file": "object", "caption": "string" }
+        }
+      ]
+    },
+    {
+      "category": "Channels",
+      "description": "WhatsApp Newsletter/Channels capabilities.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/api/{session}/channels",
+          "summary": "Get a list of known channels"
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/channels",
+          "summary": "Create a new channel",
+          "body": { "name": "string", "description": "string", "picture": "object" }
+        },
+        {
+          "method": "GET",
+          "path": "/api/{session}/channels/{id}/messages/preview",
+          "summary": "Preview messages from a channel"
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/channels/{id}/follow",
+          "summary": "Follow a channel"
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/channels/{id}/unfollow",
+          "summary": "Unfollow a channel"
+        }
+      ]
+    },
+    {
+      "category": "Labels (Business Only)",
+      "description": "Manage labels and assign them to chats.",
+      "endpoints": [
+        {
+          "method": "GET",
+          "path": "/api/{session}/labels",
+          "summary": "Get all labels"
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/labels",
+          "summary": "Create a new label",
+          "body": { "name": "string", "colorHex": "string" }
+        },
+        {
+          "method": "PUT",
+          "path": "/api/{session}/labels/chats/{chatId}",
+          "summary": "Assign labels to a chat",
+          "body": { "labels": "array" }
+        }
+      ]
+    },
+    {
+      "category": "Calls & Media Processing",
+      "description": "Handle incoming calls and convert media files.",
+      "endpoints": [
+        {
+          "method": "POST",
+          "path": "/api/{session}/calls/reject",
+          "summary": "Reject an incoming call",
+          "body": { "from": "string", "id": "string" }
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/media/convert/voice",
+          "summary": "Convert an audio file to WhatsApp voice format (opus)"
+        },
+        {
+          "method": "POST",
+          "path": "/api/{session}/media/convert/video",
+          "summary": "Convert a video file to WhatsApp format (mp4)"
+        }
+      ]
+    }
+  ]
+}
