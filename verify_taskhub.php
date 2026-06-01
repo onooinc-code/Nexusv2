@@ -21,9 +21,12 @@ echo "=== TaskHub Implementation Verification ===\n\n";
 
 // Test 1: Check AgentTask model
 echo "1. Checking AgentTask model...\n";
-$reflection = new ReflectionClass(App\Models\AgentTask::class);
-$properties = $reflection->getProperties();
-$propertyNames = array_map(function($prop) { return $prop->getName(); }, $properties);
+$model = new App\Models\AgentTask();
+$propertyNames = $model->getFillable();
+$traits = class_uses(App\Models\AgentTask::class);
+if (in_array(Illuminate\Database\Eloquent\SoftDeletes::class, $traits)) {
+    $propertyNames[] = 'deleted_at';
+}
 
 $requiredFields = ['type', 'contact_id', 'conversation_id', 'payload_data', 'result_data', 'deleted_at'];
 $missingFields = array_filter($requiredFields, function($field) use ($propertyNames) {
@@ -49,9 +52,8 @@ if (class_exists(App\Models\TaskLog::class)) {
     echo "   ✓ TaskLog model exists\n";
     
     // Check if it has the expected properties
-    $taskLogReflection = new ReflectionClass(App\Models\TaskLog::class);
-    $taskLogProperties = $taskLogReflection->getProperties();
-    $taskLogPropertyNames = array_map(function($prop) { return $prop->getName(); }, $taskLogProperties);
+    $taskLogModel = new App\Models\TaskLog();
+    $taskLogPropertyNames = $taskLogModel->getFillable();
     
     $expectedProperties = ['task_id', 'level', 'message', 'context'];
     $missingProperties = array_filter($expectedProperties, function($prop) use ($taskLogPropertyNames) {

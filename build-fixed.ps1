@@ -49,7 +49,7 @@ try {
     
     # Generate application key
     Write-Host "Generating application key..." -ForegroundColor Cyan
-    php artisan key:generate
+    php artisan key:generate --force
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Application key generation skipped or already set" -ForegroundColor Yellow
     }
@@ -78,7 +78,7 @@ try {
     
     # Run database seeders
     Write-Host "Running database seeders..." -ForegroundColor Cyan
-    php artisan db:seed
+    php artisan db:seed --force
     if ($LASTEXITCODE -ne 0) {
         Write-Host "Database seeding skipped or already run" -ForegroundColor Yellow
     }
@@ -119,7 +119,7 @@ try {
     
     # Build frontend
     Write-Host "Running frontend build..." -ForegroundColor Cyan
-    npm run build
+    npm run build --inspect
     if ($LASTEXITCODE -ne 0) {
         throw "Frontend build failed"
     }
@@ -167,41 +167,10 @@ try {
     }
     
     Write-Host ""
-    Write-Host "Starting backend services..." -ForegroundColor Cyan
-    Write-Host ""
+    Write-Host "Starting all services in a single window..." -ForegroundColor Cyan
     
-    # Start Reverb in a new window
-    Write-Host "Starting Reverb WebSocket server (port 6001)..." -ForegroundColor Cyan
-    Start-Process -FilePath "powershell" -ArgumentList "-NoExit","-Command","cd '$backendPath'; php artisan reverb:start --host=0.0.0.0 --port=6001"
-    Start-Sleep -Seconds 2
-    Write-Host "Reverb server started" -ForegroundColor Green
-    
-    # Start Laravel app server
-    Write-Host "Starting Laravel application server (port 8000)..." -ForegroundColor Cyan
-    Start-Process -FilePath "powershell" -ArgumentList "-NoExit","-Command","cd '$backendPath'; php artisan serve --host=127.0.0.1 --port=8000"
-    Start-Sleep -Seconds 1
-    Write-Host "Laravel app server started" -ForegroundColor Green
-    
-    # Start queue worker
-    Write-Host "Starting queue worker..." -ForegroundColor Cyan
-    Start-Process -FilePath "powershell" -ArgumentList "-NoExit","-Command","cd '$backendPath'; php artisan queue:work --tries=1 --sleep=3"
-    Start-Sleep -Seconds 1
-    Write-Host "Queue worker started" -ForegroundColor Green
-    
-    # Start Vite dev server
-    Write-Host "Starting Vite dev server (port 5173)..." -ForegroundColor Cyan
-    Start-Process -FilePath "powershell" -ArgumentList "-NoExit","-Command","cd '$backendPath'; npm run dev"
-    Start-Sleep -Seconds 2
-    Write-Host "Vite dev server started" -ForegroundColor Green
-    
-    Pop-Location
-    
-    # Start frontend
-    Push-Location $frontendPath
-    Write-Host "Starting Next.js frontend server (port 3000)..." -ForegroundColor Cyan
-    Start-Process -FilePath "powershell" -ArgumentList "-NoExit","-Command","cd '$frontendPath'; npm run dev"
-    Start-Sleep -Seconds 2
-    Write-Host "Next.js frontend started" -ForegroundColor Green
+    # Run the custom Node.js runner to start Reverb, API, Queue, Vite, and Next.js
+    node "$PSScriptRoot\start-servers.js"
     
     Pop-Location
     
