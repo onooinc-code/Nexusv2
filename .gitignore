@@ -1,0 +1,4 @@
+.kilo/
+.kilocode/
+node_modules/
+.env
